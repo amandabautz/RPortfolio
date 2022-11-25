@@ -1,0 +1,45 @@
+#Calulcates the variance in total sleep for carnivores whose conservation status is lc
+msleep%>%
+  select(vore, conservation, sleep_total)%>%
+  filter(vore == 'carni'& conservation == 'lc')%>%
+  mutate(var = round(var(sleep_total, na.rm = TRUE), 2))%>%
+  arrange(desc(var))%>%
+  select(-vore, -conservation, -sleep_total)%>%
+  head(1)%>%
+  as.data.frame()
+  
+  
+#Calulates the highest total sleep to rem sleep ratio for rodents and displats the top species
+msleep%>%
+  select(name, order, sleep_total, sleep_rem)%>%
+  filter(order == 'Rodentia')%>%
+  mutate(ratio = sleep_total/sleep_rem)%>%
+  arrange(desc(ratio))%>%
+  select(-order, -sleep_total, -sleep_rem, -ratio)%>%
+  head(1)
+  
+  
+#Calculates the body weight to brain weight ratio for primates and shows which are greater than 100
+msleep%>%
+  select(order, bodywt, brainwt)%>%
+  filter(order == 'Primates')%>%
+  mutate(ratio = bodywt/brainwt)%>%
+  filter(ratio > 100)%>%
+  summarise(n = n())%>%
+  as.data.frame()
+  
+  
+#Calculates and shows the average sleep total and the total sleep variance for all animals and groups them by conservation status
+msleep%>%
+  group_by(conservation)%>%
+  select(conservation, sleep_total)%>%
+  summarise(mean_sleep = round(mean(sleep_total, na.rm = TRUE), 2), var_sleep = round(var(sleep_total, na.rm = TRUE), 2))%>%
+  head(6)%>%
+  as.data.frame()
+  
+  
+#Displays all domesticated herbivores that sleep more than 12 hours total.
+msleep%>%
+  select(name, conservation, vore, sleep_total)%>%
+  filter(conservation == 'domesticated', vore == 'herbi', sleep_total > 12)%>%
+  select(-conservation, -vore, -sleep_total)
