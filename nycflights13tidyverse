@@ -1,0 +1,49 @@
+#Calulates the mean distance for three carriers.
+flights %>%
+  group_by(carrier)%>%
+  filter(carrier == 'AA' | carrier == 'EV' | carrier == 'FL')%>%
+  summarise(average = round(mean(distance), 2))%>%
+  as.data.frame()
+  
+  
+#Shows the value for the month with the highest number of flights
+flights%>%
+  group_by(month)%>%
+  summarise(n = n())%>%
+  slice_max(n)%>%
+  head(1)
+  
+
+#Finds the 5 flights with the shortest distance
+flights %>%
+  group_by(origin, dest)%>%
+  select(origin, dest, distance)%>%
+  mutate(min_dist = distance)%>%
+  arrange(min_dist)%>%
+  select(-distance)%>%
+  distinct()%>%
+  head(5)
+  
+  
+#Displays the 5 days of the year that had the highest average distance when leaving JFK airport.
+flights%>%
+  group_by(month, day)%>%
+  filter(origin == 'JFK')%>%
+  select(month, day, distance, origin)%>%
+  mutate(mean_distance = round(mean(distance), 2))%>%
+  arrange(desc(mean_distance))%>%
+  select(-distance, -origin)%>%
+  distinct()%>%
+  head(5)%>%
+  as.data.frame()
+  
+  
+#Calculates and displays the maximum arrival delays for the Boston and Atlanta airports.
+flights%>%
+  group_by(dest)%>%
+  select(dest, arr_delay)%>%
+  filter(dest == 'BOS' | dest == 'ATL')%>%
+  arrange(desc(arr_delay))%>%
+  filter(dest == 'BOS' & arr_delay == 422 | dest == 'ATL' & arr_delay == 895)%>%
+  mutate(max_arr_delay = arr_delay)%>%
+  select(-arr_delay)
