@@ -1,2 +1,2 @@
 # RPortfolio
-/*Personal R protfolio containing Projects and code examples.*/
+R portfolio containing Projects and Statistical Analysis Examples.
